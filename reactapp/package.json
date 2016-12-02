@@ -1,0 +1,8 @@
+{
+  "name": "forkfoundry_reactapp",
+  "version": "0.1.0",
+  "description": "React front end for Fork Foundry",
+  "main": "index.js",
+  "author": "Raghu K <rgh.199@gmail.com>",
+  "license": "MIT"
+}
