@@ -20,5 +20,6 @@ from oneide import urls as oneide_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^auth/', include('rest_framework.urls')),
     url(r'^ff/', include(oneide_urls)),
 ]
