@@ -19,7 +19,7 @@ class Language(models.Model):
 class Snippet(MPTTModel):
     title = models.CharField(max_length = 100)
     code = models.TextField()
-    owner = models.ForeignKey(User, on_delete = models.DO_NOTHING)
+    owner = models.ForeignKey(User, related_name='snippets', on_delete = models.DO_NOTHING)
     code = models.TextField()
     language = models.ForeignKey(Language, on_delete = models.DO_NOTHING)
     created = models.DateTimeField(auto_now_add = True)
@@ -31,3 +31,4 @@ class Snippet(MPTTModel):
 
     def __unicode__(self):
         return "{0}/{1}".format(self.owner.username, self.title)
+
