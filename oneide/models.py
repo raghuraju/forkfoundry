@@ -8,7 +8,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 class Language(models.Model):
     name = models.CharField(max_length = 100)
     default_ext = models.CharField(max_length = 5)
-    default_exec_ext = models.CharField(max_length = 5)
+    default_exec_ext = models.CharField(max_length = 5, blank = True, null = True)
     default_compilation_command = models.CharField(max_length = 10, null = True, blank = True)
     default_run_command = models.CharField(max_length = 10)
 

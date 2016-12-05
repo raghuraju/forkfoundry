@@ -50,7 +50,7 @@ class SnippetViewSet(viewsets.ModelViewSet):
 
     @classmethod
     def extract_class_name(cls, code):
-        class_name = re.findall(r'class (\w+)\s+{', code)
+        class_name = re.findall(r'class (\w+)\s*{', code)
         # TODO: Throw an error if more than one class names were found
         return class_name[0]
 
@@ -74,21 +74,38 @@ class SnippetViewSet(viewsets.ModelViewSet):
                 class_name = '_'.join([language.name.lower(), str(snippet.id)])
 
             file_name = '.'.join([class_name, language.default_ext])
+            if language.default_exec_ext:
+                exec_file_name = '.'.join([class_name, language.default_exec_ext])
+            else:
+                exec_file_name = class_name
+
             with open(os.path.join(snippet_home, file_name), 'w') as f:
                 f.writelines(snippet.code)
 
             cmds = [language.default_compilation_command, language.default_run_command]
+            
+            # optional compilation phase
             if cmds[0]:
-                proc = subprocess.Popen([cmds[0], file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                std_out, std_err = proc.communicate()
+                proc = subprocess.Popen([cmds[0], file_name], stderr=subprocess.PIPE)
+                std_err = proc.communicate()[1]
                 if std_err:
                     snippet.compilation_output = std_err
                     snippet.successful = False
                     snippet.save()
                     return Response({'sucess': False, 'output': std_err, 'stage': 'compilation'})
 
-            return Response(str([std_out, std_err]))
-
+            proc = subprocess.Popen([cmds[1], exec_file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            std_out, std_err = proc.communicate()
+            if std_err:
+                snippet.execution_output = std_err
+                snippet.successful = False
+                snippet.save()
+                return Response({'sucess': False, 'output': std_err, 'stage': 'execution'})
+            else:
+                snippet.execution_output = std_out
+                snippet.successful = True
+                snippet.save()
+                return Response({'sucess': True, 'output': std_out, 'stage': 'execution'})
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
