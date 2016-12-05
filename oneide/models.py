@@ -24,7 +24,8 @@ class Snippet(MPTTModel):
     language = models.ForeignKey(Language, on_delete = models.DO_NOTHING)
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
-    output = models.TextField(blank=True, null=True)
+    compilation_output = models.TextField(blank=True, null=True)
+    execution_output = models.TextField(blank=True, null=True)
     successful = models.BooleanField(default = False)
     parent = TreeForeignKey('self', null = True, blank = True,
                 related_name = 'forks', db_index = True)

@@ -127,3 +127,5 @@ STATIC_URL = '/static/'
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
+
+SNIPPET_HOME = os.path.join(BASE_DIR, 'snippets_home')

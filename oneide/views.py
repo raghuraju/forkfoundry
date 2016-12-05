@@ -1,17 +1,24 @@
+import os
+import re
+import uuid
+import json
+import subprocess
+
 from django.shortcuts import render_to_response
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, detail_route
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from .models import Language, Snippet
 from .serializers import LanguageSerializer, SnippetSerializer
 from .serializers import UserSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsOwner
 
 def show_snippets_tree(request):
     return render_to_response('oneide/snippets.html',
@@ -40,6 +47,49 @@ class SnippetViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    @classmethod
+    def extract_class_name(cls, code):
+        class_name = re.findall(r'class (\w+)\s+{', code)
+        # TODO: Throw an error if more than one class names were found
+        return class_name[0]
+
+    @detail_route(permission_classes=[IsOwner])
+    def run(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        language = snippet.language
+
+        if snippet.code:
+
+            snippets_home = settings.SNIPPET_HOME
+            snippet_home = os.path.join(snippets_home, str(snippet.id))
+
+            if not os.path.exists(snippet_home):
+                os.mkdir(snippet_home)
+            os.chdir(snippet_home)
+
+            if language.name.lower() == 'java':
+                class_name = SnippetViewSet.extract_class_name(snippet.code)
+            else:
+                class_name = '_'.join([language.name.lower(), str(snippet.id)])
+
+            file_name = '.'.join([class_name, language.default_ext])
+            with open(os.path.join(snippet_home, file_name), 'w') as f:
+                f.writelines(snippet.code)
+
+            cmds = [language.default_compilation_command, language.default_run_command]
+            if cmds[0]:
+                proc = subprocess.Popen([cmds[0], file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                std_out, std_err = proc.communicate()
+                if std_err:
+                    snippet.compilation_output = std_err
+                    snippet.successful = False
+                    snippet.save()
+                    return Response({'sucess': False, 'output': std_err, 'stage': 'compilation'})
+                print std_out
+
+            return Response(str([std_out, std_err]))
+
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
