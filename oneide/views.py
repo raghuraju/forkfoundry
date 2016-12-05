@@ -54,6 +54,20 @@ class SnippetViewSet(viewsets.ModelViewSet):
         # TODO: Throw an error if more than one class names were found
         return class_name[0]
 
+    @detail_route(methods=['GET'])
+    def fork(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        scopy = Snippet(title = snippet.title,
+            code = snippet.code,
+            owner = request.user,
+            compilation_output = snippet.compilation_output,
+            execution_output = snippet.execution_output,
+            language = snippet.language,
+            parent = snippet)
+        scopy.save()
+        return Response(SnippetSerializer(scopy).data)
+
+
     @detail_route(permission_classes=[IsOwner])
     def run(self, request, *args, **kwargs):
         snippet = self.get_object()
