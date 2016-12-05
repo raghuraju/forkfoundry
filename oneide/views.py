@@ -86,7 +86,6 @@ class SnippetViewSet(viewsets.ModelViewSet):
                     snippet.successful = False
                     snippet.save()
                     return Response({'sucess': False, 'output': std_err, 'stage': 'compilation'})
-                print std_out
 
             return Response(str([std_out, std_err]))
 
