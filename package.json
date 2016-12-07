@@ -1,0 +1,9 @@
+{
+  "name": "forkfoundry",
+  "version": "0.1.0",
+  "description": "Fork Foundry - A place for all your snippets.",
+  "main": "index.js",
+  "repository": "https://github.com/raghuraju/forkfoundry.git",
+  "author": "Raghu K <rgh.199@gmail.com>",
+  "license": "MIT"
+}
