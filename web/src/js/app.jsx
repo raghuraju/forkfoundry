@@ -1,10 +1,14 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React, { PropTypes } from'react';
+import ReactDOM from 'react-dom';
 
-var Hello = React.createClass({
-	render: function() {
-		return (<h1>Hello World! - Bingo!!</h1>);
-	},
-});
+const Hello = props => (
+	<div>
+		App says: {props.message}
+	</div>
+);
 
-ReactDOM.render(<Hello />, document.getElementById('app'));
+Hello.PropTypes = {
+	message: PropTypes.string.isRequired,
+};
+
+ReactDOM.render(<Hello message="hello, world!"/>, document.getElementById('app'));

@@ -29,7 +29,10 @@ module.exports = validate({
 				exclude: [/node_modules/],
 				loader: 'babel-loader',
 				query: {
-					presets: ['react'],
+					presets: [
+						'latest',
+						'react',
+					],
 				}
 			},
 		],
