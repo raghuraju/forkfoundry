@@ -17,9 +17,11 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from oneide import urls as oneide_urls
+from oneide import views as oneide_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', include('rest_framework.urls')),
-    url(r'^ff/', include(oneide_urls)),
+    url(r'^forkfoundry/', include(oneide_urls)),
+    url(r'^$', oneide_views.IndexPageView.as_view(), name='index'),
 ]

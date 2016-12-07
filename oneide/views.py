@@ -5,6 +5,7 @@ import json
 import subprocess
 
 from django.shortcuts import render_to_response
+from django.views.generic.base import TemplateView
 from django.contrib.auth.models import User
 from django.conf import settings
 
@@ -20,6 +21,7 @@ from .serializers import LanguageSerializer, SnippetSerializer
 from .serializers import UserSerializer
 from .permissions import IsOwnerOrReadOnly, IsOwner
 
+
 def show_snippets_tree(request):
     return render_to_response('oneide/snippets.html',
         {'snippets': Snippet.objects.all()})
@@ -32,6 +34,10 @@ def show_snippets_tree(request):
 #         'languages': reverse('language-list', request=request, format=format),
 #         'snippets': reverse('snippet-list', request=request, format=format),
 #     })
+
+
+class IndexPageView(TemplateView):
+    template_name = 'index.html'
 
 
 class LanguageViewSet(viewsets.ModelViewSet):
@@ -53,6 +59,13 @@ class SnippetViewSet(viewsets.ModelViewSet):
         class_name = re.findall(r'class (\w+)\s*{', code)
         # TODO: Throw an error if more than one class names were found
         return class_name[0]
+
+    # @detail_route(methods=['GET'])
+    # def history(self, request, *args, **kwargs):
+    #     snippet = self.get_object()
+    #     root = snippet.get_root()
+    #     return Response()
+        
 
     @detail_route(methods=['GET'])
     def fork(self, request, *args, **kwargs):
