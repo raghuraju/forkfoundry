@@ -1,9 +1,11 @@
+{% load render_bundle from webpack_loader %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Fork Foundry - A place for all your snippets.</title>
 </head>
 <body>
-
+	<div id='app'></div>
+	{% render_bundle 'main' %}
 </body>
 </html>

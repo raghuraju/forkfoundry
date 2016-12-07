@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'mptt',
+    'webpack_loader',
 
     'oneide',
 ]
@@ -59,7 +60,7 @@ ROOT_URLCONF = 'forkfoundry.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'web'), ],
+        'DIRS': [os.path.join(BASE_DIR, 'web', 'dist'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,9 +124,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'web/dist'),
+)
 
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
 SNIPPET_HOME = os.path.join(BASE_DIR, 'snippets_home')
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+    },
+}
