@@ -6,7 +6,7 @@ var BundleTracker = require('webpack-bundle-tracker');
 module.exports = validate({
 	context: __dirname,
 
-	entry: './web/src/js/app',
+	entry: './web/src/js/index',
 
 	output: {
 		path: path.resolve('./web/dist/bundles'),

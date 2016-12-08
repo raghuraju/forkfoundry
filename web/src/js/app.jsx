@@ -1,14 +1,8 @@
 import React, { PropTypes } from'react';
-import ReactDOM from 'react-dom';
+import { Button } from 'react-bootstrap';
 
-const Hello = props => (
-	<div>
-		App says: {props.message}
-	</div>
+const App = props => (
+	(<h1>Hello World</h1>)
 );
 
-Hello.PropTypes = {
-	message: PropTypes.string.isRequired,
-};
-
-ReactDOM.render(<Hello message="hello, world!"/>, document.getElementById('app'));
+export default App;
